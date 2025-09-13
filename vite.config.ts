@@ -6,15 +6,15 @@ export default defineConfig(({ mode }) => {
   // Load env variables based on the current mode
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Use VITE_BASE_URL if set, otherwise use root path for production
-  const base = process.env.VITE_BASE_URL || (mode === 'development' ? '/' : '/');
+  // For GitHub Pages deployment, use the repository name as base path
+  // For custom domain, use root path '/'
+  const isCustomDomain = process.env.VITE_USE_CUSTOM_DOMAIN === 'true';
+  const base = isCustomDomain ? '/' : '/children4worldchildren/';
   
   return {
   plugins: [react()],
   base,
   server: {
-    // Ensure the development server serves from the correct base
-    base: base !== '/' ? base : undefined,
     port: 5173,
     host: true
   },
