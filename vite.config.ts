@@ -6,7 +6,8 @@ export default defineConfig(({ mode }) => {
   // Load env variables based on the current mode
   const env = loadEnv(mode, process.cwd(), '');
   
-  const base = mode === 'development' ? '/' : '/children4worldchildren/';
+  // Use VITE_BASE_URL if set, otherwise use root path for production
+  const base = process.env.VITE_BASE_URL || (mode === 'development' ? '/' : '/');
   
   return {
   plugins: [react()],
