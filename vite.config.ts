@@ -17,11 +17,12 @@ export default defineConfig(({ mode }) => {
     port: 5173,
     host: true
   },
-  define: {
-    'process.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(env.VITE_GOOGLE_MAPS_API_KEY),
-  },
+  publicDir: 'public',
   build: {
     target: 'es2015',
+    assetsDir: 'assets',
+    outDir: 'dist',
+    emptyOutDir: true,
     minify: 'terser',
     terserOptions: {
       compress: {
