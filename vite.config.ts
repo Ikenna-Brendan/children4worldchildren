@@ -6,8 +6,9 @@ export default defineConfig(({ mode }) => {
   // Load env variables based on the current mode
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Always use root path for both development and production
-  const base = '/';
+  // Use root path for production when using custom domain
+  // Use repository name as base path for GitHub Pages
+  const base = process.env.NODE_ENV === 'production' ? '/children4worldchildren/' : '/';
   
   return {
   plugins: [react()],
