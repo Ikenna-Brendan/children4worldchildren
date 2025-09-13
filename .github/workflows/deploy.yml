@@ -32,8 +32,8 @@ jobs:
 
       - name: Build
         run: |
-          # Build with GitHub Pages configuration
-          GITHUB_PAGES=true npm run build
+          # Build with production configuration
+          npm run build
           cp public/CNAME dist/
           touch dist/.nojekyll
 

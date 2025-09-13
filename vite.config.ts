@@ -6,9 +6,8 @@ export default defineConfig(({ mode }) => {
   // Load env variables based on the current mode
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Handle both GitHub Pages and custom domain
-  const isGhPages = process.env.GITHUB_PAGES === 'true';
-  const base = isGhPages ? '/children4worldchildren/' : '/';
+  // Always use root path for production
+  const base = '/';
   
   // Use the env variable to avoid lint warning
   console.log('Google Maps API Key:', env.VITE_GOOGLE_MAPS_API_KEY ? 'Set' : 'Not set');
