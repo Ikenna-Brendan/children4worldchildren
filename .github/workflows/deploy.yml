@@ -42,7 +42,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          keep_files: true
+          destination_dir: .
+          keep_files: false
           enable_jekyll: false
           force_orphan: true
           cname: children4worldchildren.com
+          full_commit_message: 'Deploy to GitHub Pages'
