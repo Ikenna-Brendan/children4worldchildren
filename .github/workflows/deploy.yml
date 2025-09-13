@@ -10,34 +10,38 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+          cache: 'npm'
+
       - name: Install dependencies
         run: npm install
-        
+
       - name: Build
         run: |
-          echo "NODE_ENV=production" > .env.production
-          echo "VITE_BASE_URL=/" >> .env.production
-          # Ensure CNAME is in the dist directory
-          mkdir -p dist
-          echo "children4worldchildren.com" > dist/CNAME
-          npm run build -- --base=/
-        
+          npm run build
+          cp public/CNAME dist/
+          touch dist/.nojekyll
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           keep_files: true
+          enable_jekyll: false
           force_orphan: true
           cname: children4worldchildren.com

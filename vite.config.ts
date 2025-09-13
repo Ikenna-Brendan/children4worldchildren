@@ -6,8 +6,8 @@ export default defineConfig(({ mode }) => {
   // Load env variables based on the current mode
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Use VITE_BASE_URL from environment or default to root
-  const base = process.env.VITE_BASE_URL || '/';
+  // Always use root path for both development and production
+  const base = '/';
   
   return {
   plugins: [react()],
