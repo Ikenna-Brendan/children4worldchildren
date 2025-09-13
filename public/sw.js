@@ -1,11 +1,14 @@
-const CACHE_NAME = 'c4wc-v1';
+const CACHE_NAME = 'c4wc-v2';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
-  '/logo.png',
-  '/favicon.ico'
+  '/favicon.ico',
+  '/android-chrome-192x192.png',
+  '/android-chrome-512x512.png',
+  '/favicon-16x16.png',
+  '/favicon-32x32.png',
+  '/favicon-48x48.png',
+  '/site.webmanifest'
 ];
 
 // Install event - cache static assets
@@ -14,19 +17,56 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        // Cache each resource individually to prevent the entire cache from failing
+        return Promise.all(
+          urlsToCache.map((url) => {
+            return cache.add(url).catch(err => {
+              console.warn(`Failed to cache ${url}:`, err);
+            });
+          })
+        );
       })
   );
+  // Activate the new service worker immediately
+  self.skipWaiting();
 });
 
 // Fetch event - serve from cache if available
 self.addEventListener('fetch', (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+  
+  // Skip cross-origin requests
+  if (!event.request.url.startsWith(self.location.origin)) return;
+  
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
+    caches.match(event.request).then((response) => {
+      // Return cached version if available
+      if (response) {
+        return response;
+      }
+      
+      // Clone the request
+      const fetchRequest = event.request.clone();
+      
+      // Fetch from network and cache the response
+      return fetch(fetchRequest).then((response) => {
+        // Check if we received a valid response
+        if (!response || response.status !== 200 || response.type !== 'basic') {
+          return response;
+        }
+        
+        // Clone the response
+        const responseToCache = response.clone();
+        
+        // Cache the response
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
+        
+        return response;
+      });
+    })
   );
 });
 
@@ -42,6 +82,9 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      // Take control of all clients immediately
+      return self.clients.claim();
     })
   );
-}); 
+});

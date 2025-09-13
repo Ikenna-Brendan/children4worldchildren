@@ -8,17 +8,29 @@ import './index.css';
 // Initialize performance monitoring
 initPerformanceMonitoring();
 
-// Register service worker for caching and offline support
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('SW registered: ', registration);
-      })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
+// Register service worker for caching and offline support in production only
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  const publicUrl = new URL(import.meta.env.BASE_URL, window.location.href);
+  
+  // Only register the service worker if we're on the same origin
+  if (publicUrl.origin === window.location.origin) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          
+          // Check for updates every hour
+          setInterval(() => {
+            registration.update().catch(err => 
+              console.log('ServiceWorker update check failed: ', err)
+            );
+          }, 60 * 60 * 1000);
+        })
+        .catch((error) => {
+          console.error('ServiceWorker registration failed: ', error);
+        });
+    });
+  }
 }
 
 createRoot(document.getElementById('root')!).render(
