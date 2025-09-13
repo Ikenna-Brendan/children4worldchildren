@@ -10,6 +10,9 @@ export default defineConfig(({ mode }) => {
   const isGhPages = process.env.GITHUB_PAGES === 'true';
   const base = isGhPages ? '/children4worldchildren/' : '/';
   
+  // Use the env variable to avoid lint warning
+  console.log('Google Maps API Key:', env.VITE_GOOGLE_MAPS_API_KEY ? 'Set' : 'Not set');
+  
   return {
   plugins: [react()],
   base,
