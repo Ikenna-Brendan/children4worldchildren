@@ -32,8 +32,8 @@ jobs:
 
       - name: Build
         run: |
-          # Build with the correct base URL for GitHub Pages
-          NODE_ENV=production npm run build -- --base=/children4worldchildren/
+          # Build with GitHub Pages configuration
+          GITHUB_PAGES=true npm run build
           cp public/CNAME dist/
           touch dist/.nojekyll
 
