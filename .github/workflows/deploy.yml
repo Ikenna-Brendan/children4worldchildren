@@ -26,8 +26,12 @@ jobs:
         
       - name: Build
         run: |
-          echo "VITE_USE_CUSTOM_DOMAIN=true" > .env.production
-          npm run build
+          echo "NODE_ENV=production" > .env.production
+          echo "VITE_BASE_URL=/" >> .env.production
+          # Ensure CNAME is in the dist directory
+          mkdir -p dist
+          echo "children4worldchildren.com" > dist/CNAME
+          npm run build -- --base=/
         
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

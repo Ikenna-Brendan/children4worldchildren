@@ -1,4 +1,4 @@
-const CACHE_NAME = 'c4wc-v2';
+const CACHE_NAME = 'c4wc-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -8,7 +8,8 @@ const urlsToCache = [
   '/favicon-16x16.png',
   '/favicon-32x32.png',
   '/favicon-48x48.png',
-  '/site.webmanifest'
+  '/site.webmanifest',
+  '/assets/logo.png'
 ];
 
 // Install event - cache static assets

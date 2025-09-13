@@ -6,10 +6,8 @@ export default defineConfig(({ mode }) => {
   // Load env variables based on the current mode
   const env = loadEnv(mode, process.cwd(), '');
   
-  // For GitHub Pages deployment, use the repository name as base path
-  // For custom domain, use root path '/'
-  const isCustomDomain = process.env.VITE_USE_CUSTOM_DOMAIN === 'true';
-  const base = isCustomDomain ? '/' : '/children4worldchildren/';
+  // Use VITE_BASE_URL from environment or default to root
+  const base = process.env.VITE_BASE_URL || '/';
   
   return {
   plugins: [react()],
