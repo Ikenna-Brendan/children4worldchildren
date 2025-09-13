@@ -11,8 +11,7 @@ initPerformanceMonitoring();
 // Register service worker for caching and offline support in production only
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   const publicUrl = new URL(import.meta.env.BASE_URL, window.location.href);
-  const isGhPages = window.location.hostname.includes('github.io');
-  const swPath = isGhPages ? '/children4worldchildren/sw.js' : '/sw.js';
+  const swPath = '/sw.js';
   
   // Only register the service worker if we're on the same origin
   if (publicUrl.origin === window.location.origin) {

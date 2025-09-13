@@ -137,7 +137,7 @@ const AppContent = () => {
 
 function App() {
   return (
-    <Router basename={import.meta.env.PROD ? '/children4worldchildren' : '/'}>
+    <Router>
       <div className="App">
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
           <AppContent />
