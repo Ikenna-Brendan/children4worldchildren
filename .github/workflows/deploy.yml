@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -24,10 +25,15 @@ jobs:
         run: npm install
         
       - name: Build
-        run: npm run build
+        run: |
+          echo "VITE_USE_CUSTOM_DOMAIN=true" > .env.production
+          npm run build
         
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          keep_files: true
+          force_orphan: true
+          cname: children4worldchildren.com
