@@ -1,4 +1,4 @@
-const CACHE_NAME = 'c4wc-v4';
+const CACHE_NAME = 'c4wc-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -22,20 +22,34 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        // Cache each resource individually to prevent the entire cache from failing
+        // Only cache essential resources that we know exist
+        const essentialUrls = [
+          '/',
+          '/index.html',
+          '/site.webmanifest',
+          '/android-chrome-192x192.png',
+          '/android-chrome-512x512.png'
+        ];
+        
         return Promise.all(
-          urlsToCache.map((url) => {
+          essentialUrls.map(url => {
             const fullUrl = getCacheUrl(url);
-            return fetch(fullUrl, { credentials: 'same-origin', mode: 'no-cors' })
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return cache.put(fullUrl, response);
-              })
-              .catch(err => {
-                console.warn(`Failed to cache ${fullUrl}:`, err);
-              });
+            return fetch(fullUrl, { 
+              credentials: 'same-origin', 
+              mode: 'no-cors',
+              cache: 'no-cache'
+            })
+            .then(response => {
+              if (!response || response.status >= 400) {
+                console.warn(`Skipping cache for ${fullUrl} - status: ${response?.status}`);
+                return null;
+              }
+              return cache.put(fullUrl, response);
+            })
+            .catch(err => {
+              console.warn(`Failed to cache ${fullUrl}:`, err);
+              return null;
+            });
           })
         );
       })
